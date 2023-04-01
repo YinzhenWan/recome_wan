@@ -63,3 +63,13 @@ def get_feature_num(enc_dict):
         elif 'vocab_size' in enc_dict[col].keys():
             num_sparse+=1
     return num_sparse,num_dense
+def get_features_num(enc_dict):   #din 里面需要
+    num_user = 0
+    num_item = 0
+    for col in enc_dict.keys():
+        if 'vocab_size' in enc_dict[col].keys():
+            if enc_dict[col]['type']=='item':
+                num_item +=1
+            else:
+                num_user +=1
+    return num_user,num_item
