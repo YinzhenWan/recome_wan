@@ -23,10 +23,10 @@ class MultiInterestSelfAttention(nn.Module):
         H = torch.einsum('bse, ed -> bsd', sequence_embeddings, self.W1).tanh()
 
         # Apply second layer of weights and softmax
-        if mask is not None:
+        if mask is not None:    # 论文里面attention哪个公式
             # Add a large negative constant to the masked elements of the attention matrix to give them near 0 probability.
             A = torch.einsum('bsd, dk -> bsk', H, self.W2) + -1.e9 * (1 - mask.float())
-            A = F.softmax(A, dim=1)
+            A = F.softmax(A, dim=1)  # softmax 做了归一化 把非法位置置为0，负无穷
         else:
             A = F.softmax(torch.einsum('bsd, dk -> bsk', H, self.W2), dim=1)
 
@@ -88,24 +88,24 @@ class CapsuleNetwork(nn.Module):
         if self.bilinear_type > 0:  # b初始化为0（一般的胶囊网络算法）
             capsule_weight = torch.zeros(item_eb_hat.shape[0], self.interest_num, self.seq_len, device=device,
                                          requires_grad=False)
-        else:  # MIND使用高斯分布随机初始化b
+        else:  # MIND使用高斯分布随机初始化b  # ***第一步，初始化b
             capsule_weight = torch.randn(item_eb_hat.shape[0], self.interest_num, self.seq_len, device=device,
                                          requires_grad=False)
 
         for i in range(self.routing_times):  # 动态路由传播3次
-            atten_mask = torch.unsqueeze(mask, 1).repeat(1, self.interest_num, 1)  # [b, in, s]
+            atten_mask = torch.unsqueeze(mask, 1).repeat(1, self.interest_num, 1)  # [b, in, s] # 对序列进行mask
             paddings = torch.zeros_like(atten_mask, dtype=torch.float)
 
             # 计算c，进行mask，最后shape=[b, in, 1, s]
-            capsule_softmax_weight = F.softmax(capsule_weight, dim=-1)
+            capsule_softmax_weight = F.softmax(capsule_weight, dim=-1)   # ***第二步，对b进行softmax
             capsule_softmax_weight = torch.where(torch.eq(atten_mask, 0), paddings, capsule_softmax_weight)  # mask
             capsule_softmax_weight = torch.unsqueeze(capsule_softmax_weight, 2)
 
             if i < 2:
                 # s=c*u_hat , (batch_size, interest_num, 1, seq_len) * (batch_size, interest_num, seq_len, hidden_size)
-                interest_capsule = torch.matmul(capsule_softmax_weight,
+                interest_capsule = torch.matmul(capsule_softmax_weight,           # ***第三步，b 乘上用户行为序列ei,
                                                 item_eb_hat_iter)  # shape=(batch_size, interest_num, 1, hidden_size)
-                cap_norm = torch.sum(torch.square(interest_capsule), -1, True)  # shape=(batch_size, interest_num, 1, 1)
+                cap_norm = torch.sum(torch.square(interest_capsule), -1, True)  # shape=(batch_size, interest_num, 1, 1)  # ****第四步，进行压缩
                 scalar_factor = cap_norm / (1 + cap_norm) / torch.sqrt(cap_norm + 1e-9)  # shape同上
                 interest_capsule = scalar_factor * interest_capsule  # squash(s)->v,shape=(batch_size, interest_num, 1, hidden_size)
 

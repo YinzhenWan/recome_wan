@@ -16,7 +16,7 @@ class DeepFM(nn.Module):
         Initializes the DeepFM model.
 
         Args:
-        - embedding_dim (int): dimensionality of the feature embeddings
+        - embedding_dim  (int): dimensionality of the feature embeddings
         - hidden_units (List[int]): sizes of the hidden units in the MLP layer
         - loss_fun (str): name of the loss function used to optimize the model
         - enc_dict (dict): a dictionary of the form {"sparse_feature1": num_categories1, "sparse_feature2": num_categories2, "dense_feature1": None, ...}

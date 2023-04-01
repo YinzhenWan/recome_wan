@@ -15,12 +15,13 @@ class SequenceDataset(Dataset):
 
         if self.time_col:
             self.df = self.df.sort_values(by=[self.user_col, self.time_col])
+        # 按照时间顺序进行排序
 
         if self.enc_dict==None:
             self.get_enc_dict()
         self.enc_data()
 
-        self.user2item = self.df.groupby(self.user_col)[self.item_col].apply(list).to_dict()
+        self.user2item = self.df.groupby(self.user_col)[self.item_col].apply(list).to_dict()   # key 记录的是用户id,value记录的是用户的行为点击序列
         self.user_list = self.df[self.user_col].unique()
         self.phase = phase
 
@@ -44,21 +45,22 @@ class SequenceDataset(Dataset):
             self.df[f] = self.df[f].apply(lambda x:self.enc_dict[f].get(x,0))
 
     def __getitem__(self, index):
-        user_id = self.user_list[index]
-        item_list = self.user2item[user_id]
+        user_id = self.user_list[index] #获取用户id
+        item_list = self.user2item[user_id] #通过用户id 来获取用户对应的id序列
         hist_item_list = []
         hist_mask_list = []
         if self.phase == 'train':
 
-            k = random.choice(range(4, len(item_list)))  # 从[4,len(item_list))中随机选择一个index
+            k = random.choice(range(4, len(item_list)))  # 从[4,len(item_list))中随机选择一个index,比如随机选择k这个时间点
             item_id = item_list[k]  # 该index对应的item加入item_id_list
+            # 把k之前的20个连续(max_length)当作行为序列，把k当作一个标签
 
             if k >= self.max_length:  # 选取seq_len个物品
-                hist_item_list.append(item_list[k - self.max_length: k])
-                hist_mask_list.append([1.0] * self.max_length)
+                hist_item_list.append(item_list[k - self.max_length: k])  # k=32,max_length=20，从32往前数20个 【32-20=12：32】
+                hist_mask_list.append([1.0] * self.max_length) #全是有效的 全1
             else:
-                hist_item_list.append(item_list[:k] + [0] * (self.max_length - k))
-                hist_mask_list.append([1.0] * k + [0.0] * (self.max_length - k))
+                hist_item_list.append(item_list[:k] + [0] * (self.max_length - k)) # 不够补0
+                hist_mask_list.append([1.0] * k + [0.0] * (self.max_length - k))  # mask? 序列里面一般用mask 来标记数据是否是有效位 前k个有效的补1，后面不够的补0
             data = {
                 'hist_item_list':torch.Tensor(hist_item_list).squeeze(0).long(),
                 'hist_mask_list':torch.Tensor(hist_mask_list).squeeze(0).long(),

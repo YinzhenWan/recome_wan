@@ -23,12 +23,14 @@ class EmbeddingLayer(nn.Module):
         # Create an Embedding module for each sparse input feature
         # that has the key 'vocab_size' in enc_dict.
         for col in self.enc_dict.keys():
-            if 'vocab_size' in self.enc_dict[col].keys():
+            if 'vocab_size' in self.enc_dict[col].keys(): #通过遍历字典，判断字典里面是否有vocab_size这个字段，如果有，则证明这是个离散特征，那么根据字典里的vocab_size来申明embeding表
                 self.emb_feature.append(col)
-                self.embedding_layer.update({col : nn.Embedding(
+                self.embedding_layer.update({col : nn.Embedding(  #并且用字典形式把离散特征所对应的embedding记录下来，
                     self.enc_dict[col]['vocab_size'],
                     self.embedding_dim,
                 )})
+        # 通过遍历字典，判断字段里面有vocab_size这个字段，如果有，则证明这是个离散特征，那么根据字典里的vocab_size来申明
+        # embedding层，并且用字典形式把离散特征所对应的embedding记录下来，
 
     def forward(self, X: dict) -> list:
         """
@@ -46,6 +48,6 @@ class EmbeddingLayer(nn.Module):
         # Embed each sparse input feature separately.
         feature_emb_list = []
         for col in self.emb_feature:
-            inp = X[col].long().view(-1, 1)
+            inp = X[col].long().view(-1, 1)    # 通过embedding 层得到一个潜入向量
             feature_emb_list.append(self.embedding_layer[col](inp))
         return feature_emb_list

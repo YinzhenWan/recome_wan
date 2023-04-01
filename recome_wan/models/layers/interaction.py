@@ -78,11 +78,38 @@ class LR_Layer(nn.Module):
         """
         sparse_emb = self.emb_layer(data)
         sparse_emb = torch.stack(sparse_emb, dim=1).flatten(1)  # [batch,num_sparse*emb] torch.cat对比torch.stack
+        # flatten(start_dim=1) 表示从第一个维度（也就是第二维）开始打平， (a, b, c, ...)，那么通过 flatten(1) 操作之后，
+        # 它将被展平成一个形状为 (a, b * c * ...) 的一维张量，其中后面的维度都被拉成了一维。
+
+
+        # 这行代码用于将多个稀疏张量（sparse tensor）沿着指定的维度进行堆叠，并将结果打平为一个二维张量（2D tensor）。
+        # 具体来说，首先将多个稀疏张量通过 torch.stack(sparse_emb, dim=1) 沿着第一个轴进行堆叠。这里 sparse_emb 是一个张量列表，
+        # 表示不同的稀疏张量。dim=1 表示在第一个轴进行堆叠。例如，如果 sparse_emb 包含两个大小为 (B, E1) 和 (B, E2) 的稀疏张量，
+        # 则 torch.stack(sparse_emb, dim=1) 的结果是一个大小为 (B, 2, E1 or E2) 的三维张量，其中第一个轴大小为 2，
+        # 表示堆叠的两个张量。接着，通过 .flatten(1) 将第一维和第二维合并成一个维度。这里 1 表示在第二维上进行打平操作，
+        # 即将第二维的大小 2 和第三维的大小 E1 or E2 合并成一个大小为 2*E1 or 2*E2 的新维度。最终的结果是一个二维张量，
+        # 大小为 (B, 2*E1 or 2*E2)，表示堆叠后的多个稀疏张量。
+        # reshape(-1, x.shape[-1]) 表示将最后一维大小保持不变，将其他维度的元素按照最少的方式重排，在重排后的张量中，
+        # 最后一维大小为 x.shape[-1]，而其他维度的大小自动计算。
+        # 所以，reshape(-1, x[1]) 表示将张量重排成一个二维张量，第一维大小为 -1，也就是自动计算大小以满足其他维度的要求；
+        # 第二维大小为 x[1]，也就是保持不变。这里的 x[1] 表示张量 x 的第二维大小。
 
         dense_input = get_linear_input(self.enc_dict, data)  # [batch,num_dense]
         dnn_input = torch.cat((sparse_emb, dense_input), dim=1)  # [batch,num_sparse*emb + num_dense]
         out = self.fc(dnn_input)
         return out
+        # 这段代码的作用是将稀疏特征和稠密特征合并成一个新的“混合”特征向量，以便于后续的神经网络中进行处理和输出。
+        # 具体来说，我们有两个输入特征，一个是由稀疏嵌入层编码得到的稀疏特征 sparse_emb，
+        # 另一个是由 get_linear_input 函数转换得到的稠密特征 dense_input。我们需要将它们合并起来。
+        # 其中，sparse_emb 是一个 (batch_size, num_sparse * embedding_dim) 的展平稀疏特征向量，
+        # dense_input 是一个 (batch_size, num_dense) 的稠密特征向量，num_sparse 和 num_dense
+        # 分别表示稀疏特征和稠密特征的维度大小。
+        # 为了将这些特征向量合并起来，这段代码首先通过 torch.stack(sparse_emb, dim=1).flatten(1) 将稀疏特征向量展开成一个
+        # (batch_size, num_sparse * embedding_dim) 的矩阵。
+        # 然后，dense_input 和展平后的稀疏特征向量 sparse_emb 使用 torch.cat 沿着列的方向进行拼接，得到一个新的
+        # (batch_size, num_sparse * embedding_dim + num_dense) 的特征矩阵 dnn_input。
+        # 最终，dnn_input 将作为神经网络的输入，可以接入后续的神经网络模块进行分类、回归等任务。
+        # 这种将稀疏特征和稠密特征拼接成一个新的特征向量的方法在工业界和学术界都得到了广泛的应用。
 
 
 class CrossLayer(nn.Module):
@@ -207,15 +234,18 @@ class BilinearInteractionLayer(nn.Module):
 
         if self.bilinear_type == "field_all":
             # field_all means using a single bilinear layer to interact all feature fields.
+            # 使用一个双线性层来交叉所有的特征，将所有特征都看作一个整体进行交叉
             self.bilinear_layer = nn.Linear(embedding_dim, embedding_dim, bias=False)
         elif self.bilinear_type == "field_each":
             # field_each means using a bilinear layer to interact each pair of feature fields.
             # A list of bilinear layers will be used, with a different one for each field.
+            # 对于每一个特征，使用一个双线性层来和其他特征交叉。
             self.bilinear_layer = nn.ModuleList([nn.Linear(embedding_dim, embedding_dim, bias=False)
                                                  for i in range(num_fields)])
         elif self.bilinear_type == "field_interaction":
             # field_interaction means using a bilinear layer to interact every possible pair of feature fields.
             # A list of bilinear layers will be used, with a different one for each pair of fields.
+            # 使用多个双线性层来交叉每对不同的特征，对于每一对特征，使用一个双线性层来进行交叉。
             self.bilinear_layer = nn.ModuleList([nn.Linear(embedding_dim, embedding_dim, bias=False)
                                                  for i, j in combinations(range(num_fields), 2)])
 

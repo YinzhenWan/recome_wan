@@ -53,3 +53,13 @@ def get_linear_input(enc_dict, data):
             res_data.append(data[col])
     res_data = torch.stack(res_data, axis=1)
     return res_data
+
+def get_feature_num(enc_dict):
+    num_sparse = 0
+    num_dense = 0
+    for col in enc_dict.keys():
+        if 'min' in enc_dict[col].keys():
+            num_dense+=1
+        elif 'vocab_size' in enc_dict[col].keys():
+            num_sparse+=1
+    return num_sparse,num_dense

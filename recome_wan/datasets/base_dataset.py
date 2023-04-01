@@ -59,7 +59,7 @@ class BaseDataset(Dataset):
             self.df[f] = self.df[f].astype('str')
             map_dict = dict(zip(sorted(self.df[f].unique()), range(1, 1 + self.df[f].nunique())))
             self.enc_dict[f] = map_dict
-            self.enc_dict[f]['vocab_size'] = self.df[f].nunique() + 1
+            self.enc_dict[f]['vocab_size'] = self.df[f].nunique() + 1  #为了将未出现过的特征值映射为0
 
         for f in self.dense_cols:
             self.enc_dict[f]['min'] = self.df[f].min()

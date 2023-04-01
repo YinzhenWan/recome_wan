@@ -96,10 +96,10 @@ class MIND(nn.Module):
             seq_emb = self.item_emb(item_seq)  # Batch,Seq,Emb
             item_e = self.item_emb(item).squeeze(1)
 
-            multi_interest_emb = self.capsule(seq_emb, mask, self.device)  # Batch,K,Emb
+            multi_interest_emb = self.capsule(seq_emb, mask, self.device)  # Batch,K,Emb 首先算出多兴趣，
 
-            cos_res = torch.bmm(multi_interest_emb, item_e.squeeze(1).unsqueeze(-1))
-            k_index = torch.argmax(cos_res, dim=1)
+            cos_res = torch.bmm(multi_interest_emb, item_e.squeeze(1).unsqueeze(-1))  # target item 和用户多兴趣挨个进行内积
+            k_index = torch.argmax(cos_res, dim=1)  # 筛选出和target item 最相似的多兴趣向量进行一个梯度更新
 
             best_interest_emb = torch.rand(multi_interest_emb.shape[0], multi_interest_emb.shape[2]).to(self.device)
             for k in range(multi_interest_emb.shape[0]):

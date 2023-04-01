@@ -12,7 +12,7 @@ def get_recall_predict(model: torch.nn.Module,
                        topN: int = 20) -> dict:
     # Get the item embeddings and add them to Faiss index.
     item_embs = model.output_items().cpu().detach().numpy()
-    item_embs = normalize(item_embs, norm='l2').astype('float32')
+    item_embs = normalize(item_embs, norm='l2').astype('float32') #归一化处理
     hidden_size = item_embs.shape[1]
     faiss_index = faiss.IndexFlatIP(hidden_size)
     faiss_index.add(item_embs)
@@ -35,7 +35,7 @@ def get_recall_predict(model: torch.nn.Module,
         # Get the recommendations using Faiss index.
 
         if len(user_embs.shape) == 2:
-
+            # [batch,emb]
             # Non-multi-interest model.
             user_embs = normalize(user_embs, norm='l2').astype('float32')
             D, I = faiss_index.search(user_embs, topN)
@@ -44,20 +44,22 @@ def get_recall_predict(model: torch.nn.Module,
                 preds[str(user)] = I[i, :]
 
         else:
-
+            # [batch,num_interest,emb]
             # Multi-interest model.
+            # reshape(m,n)中参数m或n其中一个可写为"-1"，"-1"的作用在于计算机根据原数组中的元素总数自动计算行或列的值。
             ni = user_embs.shape[1]
             user_embs = np.reshape(user_embs,
-                                   [-1, user_embs.shape[-1]])
+                                   [-1, user_embs.shape[-1]])  # [batch*num_interest,emb] /或者挨个遍历循环
             user_embs = normalize(user_embs, norm='l2').astype('float32')
-            D, I = faiss_index.search(user_embs, topN)
+            D, I = faiss_index.search(user_embs, topN) # D代表分数，I代表索引（item id)
+            # D,I = faiss.knn(user_embs, item_embs, topN,metric=faiss.METRIC_INNER_PRODUCT)
             for i, user in enumerate(user_list):
                 item_list_set = []
-                item_list = list(zip(np.reshape(I[i * ni:(i + 1) * ni], -1),
+                item_list = list(zip(np.reshape(I[i * ni:(i + 1) * ni], -1),  # 表示成二元祖的形式 0-3/4-7/ ((0.0.9),(0,0.8))
                                      np.reshape(D[i * ni:(i + 1) * ni], -1)))
-                item_list.sort(key=lambda x: x[1], reverse=True)
-                for j in range(len(item_list)):
-                    if item_list[j][0] not in item_list_set and item_list[j][0] != 0:
+                item_list.sort(key=lambda x: x[1], reverse=True)  #把item list 按照分数进行排序 降序
+                for j in range(len(item_list)): # 去重
+                    if item_list[j][0] not in item_list_set and item_list[j][0] != 0: # [j]代表第几个元祖，[j][0]代表索引，[j][1]代表得分：
                         item_list_set.append(item_list[j][0])
                         if len(item_list_set) >= topN:
                             break

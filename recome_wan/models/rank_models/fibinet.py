@@ -73,7 +73,7 @@ class FiBiNET(nn.Module):
             Dict[str, Union[torch.Tensor, float]]: A dictionary containing the model's output.
         """
         sparse_embedding = self.embedding_layer(data)
-        sparse_embedding = torch.stack(sparse_embedding, 1).squeeze(2)  # [batch,num_sparse,embedding_dim]
+        sparse_embedding = torch.stack(sparse_embedding, 1).squeeze(2)  # [batch,num_sparse,embedding_dim] 将稀疏矩阵的所有嵌入向量沿垂直方向叠加形成batch_size个矩阵。
         dense_input = get_linear_input(self.enc_dict, data)
 
         lr_logit = self.lr(data)
