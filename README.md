@@ -15,7 +15,7 @@
 | mmoe  | [MMOE:Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts](https://dl.acm.org/doi/abs/10.1145/3219819.3220007) | 单元格6   |
 | line   | [LINE: Large-scale Information Network Embedding](https://arxiv.org/pdf/1503.03578.pdf)   | [LINE：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/56478167)   |
 | comirec   | [COMIREC:Controllable Multi-Interest Framework for Recommendation](https://arxiv.org/pdf/2005.09347.pdf)   | 单元格6   |
-| gru4rec  | 单元格5   | 单元格6   |
-| mind  | [MIIND:Multi-interest network with dynamic routing for recommendation at Tmall](https://arxiv.org/pdf/1904.08030.pdf) | 单元格6   |
+| gru4rec  | [GRU4REC:Session-based Recommendations with Recurrent Neural Networks](https://arxiv.org/abs/1511.06939) | 单元格6   |
+| mind  | [MIND:Multi-interest network with dynamic routing for recommendation at Tmall](https://arxiv.org/pdf/1904.08030.pdf) | 单元格6   |
 | yotubednn   | [YOTUBEDNN:Deep Neural Networks for YouTube Recommendations](https://www.researchgate.net/publication/307573656_Deep_Neural_Networks_for_YouTube_Recommendations)  | 单元格6   |
-| lightgcn  | 单元格5   | 单元格6   |
+| lightgcn  | [LIGHTGCN: Simplifying and Powering Graph Convolution Network for Recommendation](https://arxiv.org/abs/2002.02126)   | 单元格6   |
