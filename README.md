@@ -9,7 +9,7 @@
 
 | model                         | paper                       | note                               |
 | -------------| ------------- | ------------ |
-| dcn   | [DCN:Deep & Cross Network for Ad Click Predictions](https://arxiv.org/abs/1708.05123)  | [D:算法原理，实现和应用](https://www.jianshu.com/p/262c63741c21)   |
+| dcn   | [DCN:Deep & Cross Network for Ad Click Predictions](https://arxiv.org/abs/1708.05123)  | [DCN:算法原理，实现和应用](https://www.jianshu.com/p/262c63741c21)   |
 | deepfm   | [DeepFM: A Factorization-Machine based Neural Network for CTR Prediction](https://www.ijcai.org/proceedings/2017/0239.pdf)   | [DEEPFM:算法原理，实现和应用](https://zhuanlan.zhihu.com/p/361451464)   |
 | fibinet  |[FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction](https://arxiv.org/pdf/1905.09433.pdf)  | [FIBINET:算法原理，实现和应用](https://www.jianshu.com/p/ec00c5a4eaef)  |
 | mmoe  | [MMOE:Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts](https://dl.acm.org/doi/abs/10.1145/3219819.3220007) | [MMOE：算法原理，实现和应用](https://blog.csdn.net/hero_myself/article/details/128400010)|
@@ -21,3 +21,4 @@
 | lightgcn  | [LightGcn: Simplifying and Powering Graph Convolution Network for Recommendation](https://arxiv.org/abs/2002.02126)   | [LightGcn:算法原理，实现和应用](https://blog.csdn.net/qq_46006468/article/details/126060701) |
 | deepwalk  | [DeepWalk: Online Learning of Social Representations](http://www.perozzi.net/publications/14_kdd_deepwalk.pdf)   | [DeepWalk：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/56380812)  |
 | node2vec  | [Node2Vev: Scalable Feature Learning for Networks](https://www.kdd.org/kdd2016/papers/files/rfp0218-groverA.pdf)   | [Node2Vec：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/56542707)   |
+| din  | [DIN:Deep Interest Network for Click-Through Rate Prediction](https://arxiv.org/abs/1706.06978)   | [DIN：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/462998394)   |    
