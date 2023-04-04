@@ -1,1 +1,0 @@
-pylint recome_wan --rcfile=pylint.conf | pylint-json2html -f jsonextended -o pylint.html

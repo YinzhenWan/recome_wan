@@ -30,7 +30,8 @@ def set_activation(activation):
         elif activation.lower() == "tanh":
             return nn.Tanh()
         else:
-            return getattr(nn, activation)()
+            return getattr(nn, activation)()  # 获取对象的属性值或方法。
+
     else:
         return activation
 
@@ -44,6 +45,8 @@ def get_dnn_input_dim(enc_dict, embedding_dim):
         elif 'vocab_size' in enc_dict[col].keys():
             num_sparse += 1
     return num_sparse * embedding_dim + num_dense
+# 函数返回num_sparse * embedding_dim + num_dense，这个值就是神经网络的输入维度。
+# 其中，num_sparse * embedding_dim表示离散型特征编码后的总维度，num_dense表示连续型特征的维度
 
 
 def get_linear_input(enc_dict, data):
@@ -53,8 +56,10 @@ def get_linear_input(enc_dict, data):
             res_data.append(data[col])
     res_data = torch.stack(res_data, axis=1)
     return res_data
+# 函数的功能是将输入数据中的所有列按照最小值进行堆叠
+# 函数返回处理后的数据，是一个二维的tensor矩阵，其中每一行表示输入数据中的一条记录，每一列表示一个特征的编码结果。
 
-def get_feature_num(enc_dict):
+def get_feature_num(enc_dict): # 计算的是离散特征和连续特征的数量
     num_sparse = 0
     num_dense = 0
     for col in enc_dict.keys():
@@ -63,7 +68,7 @@ def get_feature_num(enc_dict):
         elif 'vocab_size' in enc_dict[col].keys():
             num_sparse+=1
     return num_sparse,num_dense
-def get_features_num(enc_dict):   #din 里面需要
+def get_features_num(enc_dict):   #din 里面需要 计算的是物品特征和用户特征的数量
     num_user = 0
     num_item = 0
     for col in enc_dict.keys():

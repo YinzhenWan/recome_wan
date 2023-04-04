@@ -17,8 +17,8 @@ from recome_wan.models.utils import get_linear_input, get_dnn_input_dim, get_fea
 # DIN模型
 class DIN(nn.Module):
     def __init__(self,
-                 hidden_units=[64, 32, 16],
-                 attention_units=[32],
+                 hidden_units=[64, 32, 16], # 第一个隐藏层有 64 个神经元，第二个隐藏层有 32 个神经元，第三个隐藏层有 16 个神经元
+                 attention_units=[32], # 用于构建自注意力层中的MLP层，该层将注意力输入的高维度特征映射到一维空间。因此，在作者实现的模型中，attention_units的单元数是 [32]。
                  embedding_dim=10,
                  loss_fun='torch.nn.BCELoss()',
                  enc_dict=None,
@@ -28,9 +28,9 @@ class DIN(nn.Module):
         self.embedding_dim = embedding_dim
         self.hidden_units = hidden_units
         self.attention_units = attention_units
-        self.loss_fun = eval(loss_fun)
+        self.loss_fun = eval(loss_fun) # 可以将其转换为实际的损失函数对象。
         self.enc_dict = enc_dict
-        self.count_map = count_map
+        self.count_map = count_map  # count_map是一个记录每种用户行为发生次数的映射。
 
         self.embedding_layer = EmbeddingLayer(enc_dict=self.enc_dict, embedding_dim=self.embedding_dim)
 
@@ -47,8 +47,8 @@ class DIN(nn.Module):
         feature_emb_list = []
         for f in feature_id:
             feature_emb_list.append(
-                self.embedding_layer.emb_layer[col](f) ** 2 / self.count_map[col][int(f.detach().cpu().numpy())])
-        feature_emb = torch.cat(feature_emb_list, dim=0).mean(0)
+                self.embedding_layer.emb_layer[col](f) ** 2 / self.count_map[col][int(f.detach().cpu().numpy())]) #numpy()则是将tensor转换为numpy数组
+        feature_emb = torch.cat(feature_emb_list, dim=0).mean(0) #拼起来求均值
         return feature_emb.mean()  # 1
 
     def l2_reg(self, data):
