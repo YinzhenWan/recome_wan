@@ -22,6 +22,6 @@
 | deepwalk  | [DeepWalk: Online Learning of Social Representations](http://www.perozzi.net/publications/14_kdd_deepwalk.pdf)   | [DeepWalk：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/56380812)  |
 | node2vec  | [Node2Vev: Scalable Feature Learning for Networks](https://www.kdd.org/kdd2016/papers/files/rfp0218-groverA.pdf)   | [Node2Vec：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/56542707)   |
 | din  | [DIN:Deep Interest Network for Click-Through Rate Prediction](https://arxiv.org/abs/1706.06978)   | [DIN：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/462998394)   |    
-| sdne  | [SDNE:Deep Interest Network for Click-Through Rate Prediction](https://arxiv.org/abs/1706.06978)   | [SDNE：算法原理，实现和应用](https://blog.csdn.net/weixin_44225182/article/details/125459134)   |    
+| sdne  | [SDNE:Structural Deep Network Embedding](https://arxiv.org/abs/1706.06978)   | [SDNE：算法原理，实现和应用](https://blog.csdn.net/weixin_44225182/article/details/125459134)   |    
 |graphsage  | [GRAPHSAGE:Inductive Representation Learning on Large Graphs](https://zhuanlan.zhihu.com/p/62750137)   | [GRAPHSAGE：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/558643399)   |    
-|eges  | [EGES:Deep Interest Network for Click-Through Rate Prediction](hhttps://www.bilibili.com/video/av899559357/?vd_source=34c01d8d4f1a113a7ed5aa95bd04d882)   | [EGES：算法原理，实现和应用](https://www.zhihu.com/question/329953396/answer/2646705408?utm_id=0)   |   
+|eges  | [EGES:nhanced Graph Embedding with Side Information](hhttps://www.bilibili.com/video/av899559357/?vd_source=34c01d8d4f1a113a7ed5aa95bd04d882)   | [EGES：算法原理，实现和应用](https://www.zhihu.com/question/329953396/answer/2646705408?utm_id=0)   |   
