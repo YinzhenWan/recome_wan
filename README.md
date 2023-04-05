@@ -24,4 +24,4 @@
 | din  | [DIN:Deep Interest Network for Click-Through Rate Prediction](https://arxiv.org/abs/1706.06978)   | [DIN：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/462998394)   |    
 | sdne  | [SDNE:Structural Deep Network Embedding](https://arxiv.org/abs/1706.06978)   | [SDNE：算法原理，实现和应用](https://blog.csdn.net/weixin_44225182/article/details/125459134)   |    
 |graphsage  | [GRAPHSAGE:Inductive Representation Learning on Large Graphs](https://zhuanlan.zhihu.com/p/62750137)   | [GRAPHSAGE：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/558643399)   |    
-|eges  | [EGES:nhanced Graph Embedding with Side Information](hhttps://www.bilibili.com/video/av899559357/?vd_source=34c01d8d4f1a113a7ed5aa95bd04d882)   | [EGES：算法原理，实现和应用](https://www.zhihu.com/question/329953396/answer/2646705408?utm_id=0)   |   
+|eges  | [EGES:nhanced Graph Embedding with Side Information](https://www.bilibili.com/video/av899559357/?vd_source=34c01d8d4f1a113a7ed5aa95bd04d882)   | [EGES：算法原理，实现和应用](https://www.zhihu.com/question/329953396/answer/2646705408?utm_id=0)   |   
