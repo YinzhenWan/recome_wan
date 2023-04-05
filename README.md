@@ -24,3 +24,4 @@
 | din  | [DIN:Deep Interest Network for Click-Through Rate Prediction](https://arxiv.org/abs/1706.06978)   | [DIN：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/462998394)   |    
 | sdne  | [SDNE:Deep Interest Network for Click-Through Rate Prediction](https://arxiv.org/abs/1706.06978)   | [SDNE：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/462998394)   |    
 |graphsage  | [GRAPHSAGE:Deep Interest Network for Click-Through Rate Prediction](https://arxiv.org/abs/1706.06978)   | [GRAPHSAGE：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/462998394)   |    
+|eges  | [EGES:Deep Interest Network for Click-Through Rate Prediction](hhttps://www.bilibili.com/video/av899559357/?vd_source=34c01d8d4f1a113a7ed5aa95bd04d882)   | [EGES：算法原理，实现和应用](https://zhuanlan.zhihu.com/p/483559425)   |   
