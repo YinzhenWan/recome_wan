@@ -89,3 +89,6 @@ if __name__ == "__main__":
     unseen = tf.convert_to_tensor([[8, 3, 5]], dtype=tf.float64)
     vector = model.weighted_pooling(unseen)
     print(vector)
+# 在forward函数中，我们首先从嵌入层中获取用户和物品的嵌入向量，然后使用稀疏矩阵乘法计算用户和物品的邻居节点的嵌入向量，
+# 最后将邻居节点的嵌入向量与当前节点的嵌入向量相加，并通过全连接层进行非线性变换。最后，我们对用户和物品的嵌入向量进行L2归一化，
+# 并返回归一化后的结果作为模型的输出

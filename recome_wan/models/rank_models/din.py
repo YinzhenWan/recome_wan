@@ -72,3 +72,10 @@ class DIN(nn.Module):
         output_dict = {'pred': y_pred, 'loss': loss}
 
         return output_dict
+
+
+
+    # DIN模型中的注意力机制的权重是通过一个MLP网络学习得到的。具体来说，DIN模型将用户历史行为序列中每个行为的embedding和候选商品
+    # 的embedding进行拼接，然后通过一个多层感知机（MLP）来计算这个行为对当前候选商品的注意力权重。这个MLP网络通常包括多个全连接层
+    # 和激活函数，输出一个标量值作为权重，可以使用softmax或sigmoid等函数将其映射到[0,1]的范围内。最终，候选商品的embedding和得
+    # 到的注意力权重进行加权求和得到用户对该商品的兴趣表示。

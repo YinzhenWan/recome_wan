@@ -9,6 +9,7 @@ import tensorflow as tf
 from keras.models import Model, load_model
 from keras.layers import Embedding, Input
 from alias_sample import AliasSample
+import torch
 
 
 def create_model(numNodes, embedding_dim, order='all'):
@@ -28,10 +29,15 @@ def create_model(numNodes, embedding_dim, order='all'):
     v_j_embed_context = second_context_embed(v_j)
 
     # 两个顶点同时出现的联系概率
-    join_prob = tf.reduce_sum(v_i_embed * v_j_embed, axis=-1, keepdims=False)
+    join_prob = tf.reduce_sum(v_i_embed * v_j_embed, axis=-1, keepdims=False) # 在最后一个维度上求和（axis=-1）
     # 由中心节点得到背景节点的条件概率
     cond_prob = tf.reduce_sum(v_i_embed_second * v_j_embed_context, axis=-1, keepdims=False)
     # outputs的维度跟_batch_generator()的输出维度保持一致
+    # join_prob 计算了两个节点的一阶相似度得分，即这两个节点同时出现的概率。这里使用了点积的方法来计算相似度得分，
+    # 即将两个节点嵌入向量相乘，并在最后一个维度上求和。
+    #
+    # cond_prob 则计算了由中心节点得到背景节点的条件概率。具体来说，该得分表示了如果将中心节点嵌入向量作为条件，
+    # 那么背景节点的嵌入向量出现的概率有多大。这里同样使用了点积的方法来计算相似度得分。
     if order == 'first':
         outputs = [join_prob]
     elif order == 'second':
@@ -46,10 +52,12 @@ def create_model(numNodes, embedding_dim, order='all'):
 def kl_dist(y_true, y_pred):
     '''
     在一阶相似度中，正样本y_true=1，负样本y_true=0；在二阶相似度中，正样本y_true=1，负样本y_true=-1
+    用于衡量模型预测结果与真实结果之间的差距。
     '''
+    # 首先对于 y_true 取值为0的部分将损失函数置为0
     # y_true=0时把loss置为0，因为一阶相似度中不需要负样本
-    dot = tf.where(tf.equal(y_true, 0), 1E9, y_true * y_pred)
-    return -tf.math.log(tf.sigmoid(dot))
+    dot = tf.where(torch.eq(y_true, 0), 1E9, y_true * y_pred)
+    return -tf.math.log(torch.sigmoid(dot))
 
 
 class LINE(object):
@@ -76,7 +84,7 @@ class LINE(object):
         optimizer = tf.keras.optimizers.RMSprop()
         self.model.compile(optimizer, loss=kl_dist)  # 自定义损失函数。不论output有一个还是两个，都使用这一种loss
 
-    def _gen_sample_table(self):
+    def _gen_sample_table(self):    # 该函数的作用是生成采样表，用于负采样和边采样
         power = 0.75
         # 创建顶点采样表（负采样）
         node_degree = [0.0] * self.nodesNum
@@ -85,11 +93,12 @@ class LINE(object):
             weight = triple[2]
             node_degree[v_i] += weight  # 计算顶点的出度之和
         degree_sum = math.fsum([math.pow(d, power) for d in node_degree])  # 0.75次方是为了降低高频顶点被选中的概率
-        norm_prob = [math.pow(d, power) / degree_sum for d in node_degree]
+        norm_prob = [math.pow(d, power) / degree_sum for d in node_degree] # 这样计算出的概率分布是为了使出度较大的顶点不会被过度采样，而出度较小的顶点也不会被过度忽略。
         self.NodeSampler = AliasSample(norm_prob)
         # 创建边采样表
         weight_sum = math.fsum([triple[2] for triple in self.graph])  # 边采样时不需要0.75次方，因为边采样不是负采样
         norm_prob = [float(triple[2]) / weight_sum for triple in self.graph]
+        # 在训练过程中，边采样可以控制训练数据中不同顶点之间的采样比例，从而优化训练效果。
         self.EdgeSampler = AliasSample(norm_prob)
 
     def _batch_generator(self):
@@ -115,7 +124,7 @@ class LINE(object):
                 yield ([np.array(source), np.array(sink)], [y, y])  # 一阶loss和二阶loss是分开优化的，没有做融合
             else:
                 yield ([np.array(source), np.array(sink)], [y])
-
+            # 返回一个生成器对象而不是值
             if self.order == 'all' or self.order == 'second':
                 # 负采样（仅二阶相似度都需要）
                 for i in range(self.negative_k):
