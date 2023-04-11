@@ -9,7 +9,7 @@
 
 
 | model                         | paper                       |
-| -------------| ------------- | ------------ |
+| -------------| ------------- |
 | dcn   | [DCN:Deep & Cross Network for Ad Click Predictions](https://arxiv.org/abs/1708.05123)  |
 | deepfm   | [DeepFM: A Factorization-Machine based Neural Network for CTR Prediction](https://www.ijcai.org/proceedings/2017/0239.pdf)   |
 | fibinet  |[FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction](https://arxiv.org/pdf/1905.09433.pdf)  | 
